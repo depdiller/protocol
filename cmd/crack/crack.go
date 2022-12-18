@@ -127,7 +127,7 @@ func Crack(pathFile *string, verbose bool) {
 			text := gen.Decrypt(ciphertext)
 			fmt.Printf("Found: %s\nPlaintext: %s",
 				hex.EncodeToString(password),
-				hex.EncodeToString(text))
+				string(text))
 			return
 		}
 	}

@@ -1,17 +1,17 @@
 package main
 
 import (
-	"encoding/binary"
-	"encoding/hex"
 	"encryption"
 	"flag"
-	"fmt"
 	"generator"
 	"hashing"
 	"log"
 	"os"
 	"strings"
 )
+
+const testFilePath = "../../txt/test.txt"
+const maxFileSize = 4096
 
 func main() {
 	password := flag.String("p", "",
@@ -23,21 +23,15 @@ func main() {
 	flag.Parse()
 	gen := generator.SetUpGenerator(password, hashAlgorithm, encryptionAlgorithm)
 
-	// testing
-	plaintext, _ := hex.DecodeString("abb2abab1b12332131")
-	cipher := gen.Encrypt(plaintext)
-	fmt.Println(hex.EncodeToString(cipher))
-	text := gen.Decrypt(cipher)
-	fmt.Println(hex.EncodeToString(text))
+	testFile, err1 := os.Open(testFilePath)
+	if err1 != nil {
+		log.Fatal(err1.Error())
+	}
+	defer testFile.Close()
+	plaintext := make([]byte, maxFileSize)
+	testFile.Read(plaintext)
 
-	bs := make([]byte, 4)
-	pswd := "0a0b0cff"
-	array, _ := hex.DecodeString(pswd)
-	number := binary.BigEndian.Uint32(array)
-	fmt.Println(number)
-	binary.BigEndian.PutUint32(bs, number)
-	fmt.Println(hex.EncodeToString(bs))
-	//
+	cipher := gen.Encrypt(plaintext)
 
 	fileName := strings.Join([]string{*hashAlgorithm, *encryptionAlgorithm, *password}, "_")
 	f, err := os.Create(fileName + ".enc")
