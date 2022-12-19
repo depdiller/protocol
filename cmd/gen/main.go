@@ -3,6 +3,7 @@ package main
 import (
 	"encryption"
 	"flag"
+	"fmt"
 	"generator"
 	"hashing"
 	"log"
@@ -10,20 +11,22 @@ import (
 	"strings"
 )
 
-const testFilePath = "../../txt/test.txt"
+const testFilePath = "./txt/test.txt"
 const maxFileSize = 4096
 
 func main() {
-	password := flag.String("p", "",
+	password := flag.String("p", "01010101",
 		"Password to use in encryption")
 	hashAlgorithm := flag.String("h", hashing.Md5,
 		"Hashing algorithm")
 	encryptionAlgorithm := flag.String("e", encryption.Aes128,
 		"Encryption algorithm")
+	file := flag.String("f", testFilePath,
+		"File with plaintext")
 	flag.Parse()
 	gen := generator.SetUpGenerator(password, hashAlgorithm, encryptionAlgorithm)
 
-	testFile, err1 := os.Open(testFilePath)
+	testFile, err1 := os.Open(*file)
 	if err1 != nil {
 		log.Fatal(err1.Error())
 	}
@@ -66,4 +69,5 @@ func main() {
 	if err != nil {
 		return
 	}
+	fmt.Println("Done!")
 }

@@ -16,6 +16,9 @@ func main() {
 	if index == -1 {
 		log.Fatal("invalid file extension")
 	}
+	if *pathFile == "" {
+		log.Fatal("empty file path")
+	}
 	res, err := verification.Verify(pathFile)
 	if err != nil {
 		log.Fatal(err.Error())
